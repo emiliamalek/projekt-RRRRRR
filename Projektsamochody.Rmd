@@ -3,27 +3,43 @@ title: "Projekt samochody"
 output: html_document
 date: "2026-11-18"
 ---
+```{r}
+library(tidyverse)
+library(naniar)
+dane <- read_csv("Car_sale_ads.csv")
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# 1. Wprowadzenie
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+tutaj opiszcie wprowadzenie do projektu, cel analizy, oraz jakie dane
+zostały użyte
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+# 2. Porządkowanie i czyszczenie danych
+
+## 2.1. Braki danych
+
+```{r}
+vis_miss(dane, warn_large_data = FALSE)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+gg_miss_fct(dane, fct = Drive)
+gg_miss_fct(dane, fct = Colour)
+gg_miss_fct(dane, fct = Condition)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Linki - połączenia między brakami w zmiennych
+
+```{r}
+gg_miss_upset(dane,
+              nset=8)
+```
+
+
+
