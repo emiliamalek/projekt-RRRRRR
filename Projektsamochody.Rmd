@@ -41,5 +41,75 @@ gg_miss_upset(dane,
               nset=8)
 ```
 
+Jakie reguły powinny spełniać dane?
+- cena:powinna być większa od 0
+- waluta: PLN
+- kondycja: powinna być jedną z wartości: new, used, certified
+- marka pojazdu: USUNĄĆ N/A
+- wersja pojazdu (tu chodzi o silnik, np. 1.6, 2.0, 3.0)
+- generacja pojazdu (tu chodzi o generację, np. 1, 2, 3)
+- rok produkcji: powinna być większa od 1900 i mniejsza od 2026
+- przebieg: powinna być większa od 0 i mniejsza od 1 000 000
+- konie mechaniczne: powinna być większa od 0 i mniejsza od 800
+- pojemność skokowa: powinna być większa od 0 i mniejsza od 6000 (przy autach elektrycznych może być N/A)
+- rodzaj paliwa: powinna być jedna z wartości: Gasoline, Diesel, Gasoline + LPG, Electric (może hybryda jeszcze)
+- napęd: powinna być jedna z wartości: Front wheels, Rear wheels, 4X4 (permament), 4x4 (attached automatically)
+(4x4) attatched manually
+- transmission: powinna być jedna z wartości: manual, automatic
+- type: SUV, sedan, hatchback (kompact), station_wagon, city_cars, monivan, coupe, small_cars,convertible, van, pickup
+- doors number: powinna byc większa od 1 i mniejsza od 6
+- colour: 
+- usunąć duplikaty!!!
+- emisja CO2 : powinna być większa od 0 i mniejsza od 1000
+
+```{r}
+library(validate)
+library(validatetools)
+library(dcmodify)
+library(errorlocate)
+```
+
+Zdefiniowany szereg reguł, które muszą spelniac nasze dane
+
+```{r}
+rules <- validator(
+  Price > 0,
+  Currency == "PLN",
+  Condition %in% c("New", "Used", "Certified"),
+  Production_year > 1900 & Production_year < 2026,
+  Mileage_km > 0 & Mileage_km < 1000000,
+  Power_HP > 0 & Power_HP < 10800,
+  CO2_emissions > 0 & CO2_emissions < 450,
+  Displacement_cm3 > 0 & Displacement_cm3 < 106000 | is.na(Displacement_cm3),
+  Fuel_type %in% c("Gasoline", "Diesel", "Gasoline + LPG", "Electric", "Hybrid", "Gasoline + CNG"),
+  Drive %in% c("Front wheels", "Rear wheels", "4x4 (permanent)", "4x4 (attached automatically)", "4x4 (attached manually)"),
+  Transmission %in% c("Manual", "Automatic"),
+  Type %in% c("SUV", "sedan", "compact", "station_wagon", "city_cars", "minivan", "coupe", "small_cars", "convertible"),
+  Doors_number > 0 & Doors_number < 6
+)
+```
+
+
+```{r}
+cf <- confront (dane, rules, key = "Index")
+barplot (cf)
+```
+
+
+```{r}
+dane_naprawione <- replace_errors(dane, rules)
+sum(is.na(dane))
+sum(is.na(dane_naprawione))
+```
+
+
+
+
+
+
+
+
+
+
 
 
